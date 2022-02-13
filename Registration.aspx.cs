@@ -24,7 +24,8 @@ namespace PracticalAssignment
     public partial class WebForm : System.Web.UI.Page
     {
         string ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DatabaseConnection"].ConnectionString;
-        static string finalHash;
+        static string creditCardHash;
+        static string finalPasswordHash;
         static string salt;
         byte[] Key;
         byte[] IV;
@@ -245,10 +246,12 @@ namespace PracticalAssignment
                     rng.GetBytes(saltByte);
                     salt = Convert.ToBase64String(saltByte);
                     SHA512Managed hashing = new SHA512Managed();
+                    string creditCardWithSalt = creditCard + salt;
+                    creditCardHash = Convert.ToBase64String(hashing.ComputeHash(Encoding.UTF8.GetBytes(creditCardWithSalt)));
                     string passwordWithSalt = password + salt;
                     byte[] plainHash = hashing.ComputeHash(Encoding.UTF8.GetBytes(password));
                     byte[] hashWithSalt = hashing.ComputeHash(Encoding.UTF8.GetBytes(passwordWithSalt));
-                    finalHash = Convert.ToBase64String(hashWithSalt);
+                    finalPasswordHash = Convert.ToBase64String(hashWithSalt);
                     RijndaelManaged cipher = new RijndaelManaged();
                     cipher.GenerateKey();
                     Key = cipher.Key;
@@ -277,17 +280,17 @@ namespace PracticalAssignment
             {
                 using (SqlConnection con = new SqlConnection(ConnectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Users VALUES(@Name,@Username,@CreditCard,@Email,@PasswordHash,@PasswordSalt,@DateOfBirth,@Photo,0,null,0,@PasswordDateTime,null)"))
+                    using (SqlCommand cmd = new SqlCommand("INSERT INTO Users VALUES(@Name,@Username,@CreditCard,@Email,@PasswordHash,@Salt,@DateOfBirth,@Photo,0,null,0,@PasswordDateTime,null)"))
                     {
                         using (SqlDataAdapter sda = new SqlDataAdapter())
                         {
                             cmd.CommandType = CommandType.Text;
                             cmd.Parameters.AddWithValue("@Name", name);
                             cmd.Parameters.AddWithValue("@Username", username);
-                            cmd.Parameters.AddWithValue("@CreditCard", creditCard);
+                            cmd.Parameters.AddWithValue("@CreditCard", creditCardHash);
                             cmd.Parameters.AddWithValue("@Email", email);
-                            cmd.Parameters.AddWithValue("@PasswordHash", finalHash);
-                            cmd.Parameters.AddWithValue("@PasswordSalt", salt);
+                            cmd.Parameters.AddWithValue("@PasswordHash", finalPasswordHash);
+                            cmd.Parameters.AddWithValue("@Salt", salt);
                             cmd.Parameters.AddWithValue("@DateOfBirth", dateOfBirth);
                             cmd.Parameters.AddWithValue("@Photo", photo);
                             cmd.Parameters.AddWithValue("@PasswordDateTime", DateTime.Now);

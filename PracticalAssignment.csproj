@@ -71,7 +71,6 @@
     <Content Include="App_Data\Database_log.ldf">
       <DependentUpon>Database.mdf</DependentUpon>
     </Content>
-    <Content Include="Authentication.aspx" />
     <Content Include="ChangePassword.aspx" />
     <Content Include="CustomErrorPages\GenericError.html" />
     <Content Include="CustomErrorPages\HTTP403.html" />
@@ -83,13 +82,6 @@
     <Content Include="Registration.aspx" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Authentication.aspx.cs">
-      <DependentUpon>Authentication.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Authentication.aspx.designer.cs">
-      <DependentUpon>Authentication.aspx</DependentUpon>
-    </Compile>
     <Compile Include="ChangePassword.aspx.cs">
       <DependentUpon>ChangePassword.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

@@ -419,7 +419,7 @@ namespace PracticalAssignment
         {
             string s = null;
             SqlConnection connection = new SqlConnection(ConnectionString);
-            string sql = "select PasswordSalt FROM Users WHERE Username=@Username";
+            string sql = "select Salt FROM Users WHERE Username=@Username";
             SqlCommand command = new SqlCommand(sql, connection);
             command.Parameters.AddWithValue("@Username", username);
             try
@@ -429,11 +429,11 @@ namespace PracticalAssignment
                 {
                     while (reader.Read())
                     {
-                        if (reader["PasswordSalt"] != null)
+                        if (reader["Salt"] != null)
                         {
-                            if (reader["PasswordSalt"] != DBNull.Value)
+                            if (reader["Salt"] != DBNull.Value)
                             {
-                                s = reader["PasswordSalt"].ToString();
+                                s = reader["Salt"].ToString();
                             }
                         }
                     }
